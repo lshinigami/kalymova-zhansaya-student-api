@@ -1,0 +1,43 @@
+name: kalymova-zhansaya-student-api
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kalymova-zhansaya-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - kalymova_zhansaya_pgdata:/var/lib/postgresql/data
+    networks:
+      - kalymova-zhansaya-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: kalymova-zhansaya-student-api:v1.0-kalymova-zhansaya
+    container_name: kalymova-zhansaya-app
+    environment:
+      # "db" is the Docker service name, NOT localhost
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8085:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kalymova-zhansaya-net
+
+volumes:
+  kalymova_zhansaya_pgdata:
+
+networks:
+  kalymova-zhansaya-net:
+    driver: bridge
