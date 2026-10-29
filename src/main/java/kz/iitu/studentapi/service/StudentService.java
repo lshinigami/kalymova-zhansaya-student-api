@@ -2,9 +2,7 @@ package kz.iitu.studentapi.service;
 
 import kz.iitu.studentapi.model.Student;
 import kz.iitu.studentapi.repository.StudentRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class StudentService {
 
     public Student findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new StudentNotFoundException(id));
     }
 
     public Student create(Student student) {
@@ -31,13 +29,21 @@ public class StudentService {
         return repository.save(student);
     }
 
-    public Student update(Long id, Student student) {
-        // TODO: no existence check - a missing id silently creates a new record
-        student.setId(id);
-        return repository.save(student);
+    // Improved UPDATE (Zhansaya Kalymova): check that the student exists
+    // and change only its fields instead of silently creating a new record.
+    public Student update(Long id, Student changes) {
+        Student existing = findById(id);
+        existing.setFirstName(changes.getFirstName());
+        existing.setLastName(changes.getLastName());
+        existing.setEmail(changes.getEmail());
+        existing.setGroupName(changes.getGroupName());
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new StudentNotFoundException(id);
+        }
         repository.deleteById(id);
     }
 }
