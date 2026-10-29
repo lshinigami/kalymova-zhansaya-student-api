@@ -30,7 +30,7 @@ class StudentApiApplicationTests {
         String body = "{\"firstName\":\"Zhansaya\",\"lastName\":\"Kalymova\",\"email\":\"zhansaya@example.com\",\"groupName\":\"IT2-2312\"}";
         mockMvc.perform(post("/api/students").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.lastName").value("Kalymov"));
+                .andExpect(jsonPath("$.lastName").value("Kalymova"));
     }
 
     @Test
