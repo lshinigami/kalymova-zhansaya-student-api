@@ -16,3 +16,8 @@ Spring Boot CRUD REST API for students with PostgreSQL, Docker Compose and Jenki
 ## Run
     cp .env.example .env
     docker compose up -d --build
+
+## Change by Zhansaya Kalymova (feature/kalymova-zhansaya-crud)
+Improved UPDATE: PUT /api/students/{id} now checks that the student exists.
+Before, a missing id silently created a new record; now the API returns
+404 Not Found with a JSON message. GET by id and DELETE also return 404.
