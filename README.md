@@ -1,7 +1,7 @@
 # Kalymova Zhansaya Student API
 
 Author: Zhansaya Kalymova, group IT2-2312 (IITU)
-Status: initial version
+Status: v1.0 release (main branch)
 
 Spring Boot CRUD REST API for students with PostgreSQL, Docker Compose and Jenkins CI/CD.
 
